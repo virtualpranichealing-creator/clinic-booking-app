@@ -2,6 +2,8 @@
 
 A starter Next.js + Supabase project with three roles: **admin**, **healer**, **patient**.
 
+<!-- test: preview deploy demo -->
+
 ## What's included
 
 - `schema.sql` — full Postgres schema + Row-Level Security policies (run this in Supabase)
