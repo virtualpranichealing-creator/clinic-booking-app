@@ -49,7 +49,7 @@ export default function HealerCalendarPage() {
 
     const { data: bookingsData } = await supabase
       .from('bookings')
-      .select('id, slot_id, status, payment_method, delivery_preference, main_concern, profiles!bookings_patient_id_fkey(full_name, phone)')
+      .select('id, slot_id, status, payment_method, delivery_preference, main_concern, pain_level_before, profiles!bookings_patient_id_fkey(full_name, phone)')
       .eq('healer_id', user.id)
       .in('status', ['reserved', 'booked']);
 
@@ -234,6 +234,11 @@ export default function HealerCalendarPage() {
                 {selected.booking.main_concern && (
                   <p className="text-slate-600 bg-slate-50 rounded-lg px-2.5 py-1.5">
                     <span className="font-medium">Main concern:</span> {selected.booking.main_concern}
+                  </p>
+                )}
+                {selected.booking.pain_level_before !== null && selected.booking.pain_level_before !== undefined && (
+                  <p className="text-slate-600 bg-slate-50 rounded-lg px-2.5 py-1.5">
+                    <span className="font-medium">Pain level before:</span> {selected.booking.pain_level_before} / 10
                   </p>
                 )}
 

@@ -52,6 +52,7 @@ function PatientDashboardInner() {
   const [paymentMethod, setPaymentMethod] = useState('qr_maribank');
   const [deliveryPreference, setDeliveryPreference] = useState('online_realtime');
   const [mainConcern, setMainConcern] = useState('');
+  const [painLevel, setPainLevel] = useState(null);
   const [proofFile, setProofFile] = useState(null);
   const [myActivePackages, setMyActivePackages] = useState([]);
   const [usePackageId, setUsePackageId] = useState(null);
@@ -219,6 +220,7 @@ function PatientDashboardInner() {
     setBookingError(null);
     setUsePackageId(null);
     setMainConcern('');
+    setPainLevel(null);
   }
 
   function usablePackagesFor(slot) {
@@ -232,6 +234,10 @@ function PatientDashboardInner() {
 
     if (!mainConcern.trim()) {
       setBookingError('Please let us know your main concern for this session before submitting.');
+      return;
+    }
+    if (painLevel === null) {
+      setBookingError('Please let us know your pain level right now before submitting.');
       return;
     }
     if (!isPhysical && !usingPackage && !proofFile) {
@@ -286,6 +292,7 @@ function PatientDashboardInner() {
         payment_proof_url: filePath,
         patient_package_id: usingPackage ? usePackageId : null,
         main_concern: mainConcern.trim() || null,
+        pain_level_before: painLevel,
       })
       .select()
       .single();
@@ -687,6 +694,29 @@ function PatientDashboardInner() {
               <p className="text-[11px] text-slate-400 mt-1">
                 This will be shared with your healer so they can prepare for your session.
               </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-1 text-brand-ink">
+                Pain level right now (before healing) <span className="text-red-500">*</span>
+              </label>
+              <div className="flex flex-wrap gap-1.5">
+                {Array.from({ length: 11 }, (_, level) => level).map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    onClick={() => setPainLevel(level)}
+                    className={`w-9 h-9 rounded-lg text-sm font-medium border transition-colors ${
+                      painLevel === level
+                        ? 'bg-brand-green text-white border-brand-green'
+                        : 'border-slate-300 text-slate-600 hover:border-brand-green'
+                    }`}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
+              <p className="text-[11px] text-slate-400 mt-1">0 = No pain · 10 = Worst possible pain</p>
             </div>
 
             {bookingSlot.slot_type_id === 'physical_healing' ? (

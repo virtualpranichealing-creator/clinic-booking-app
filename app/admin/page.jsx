@@ -220,7 +220,7 @@ function AdminDashboardInner() {
 
     const { data: bookingsData } = await supabase
       .from('bookings')
-      .select('id, slot_id, status, payment_method, delivery_preference, patient_package_id, main_concern, profiles!bookings_patient_id_fkey(full_name, phone)')
+      .select('id, slot_id, status, payment_method, delivery_preference, patient_package_id, main_concern, pain_level_before, profiles!bookings_patient_id_fkey(full_name, phone)')
       .in('healer_id', healerIds)
       .in('status', ['reserved', 'booked']);
 
@@ -1111,6 +1111,11 @@ function AdminDashboardInner() {
                 {selectedSlotDetails.booking.main_concern && (
                   <p className="text-slate-600 bg-slate-50 rounded-lg px-2.5 py-1.5">
                     <span className="font-medium">Main concern:</span> {selectedSlotDetails.booking.main_concern}
+                  </p>
+                )}
+                {selectedSlotDetails.booking.pain_level_before !== null && selectedSlotDetails.booking.pain_level_before !== undefined && (
+                  <p className="text-slate-600 bg-slate-50 rounded-lg px-2.5 py-1.5">
+                    <span className="font-medium">Pain level before:</span> {selectedSlotDetails.booking.pain_level_before} / 10
                   </p>
                 )}
 
