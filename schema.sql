@@ -1127,6 +1127,13 @@ alter table public.profiles add column if not exists nda_agreed_at timestamptz;
 alter table public.bookings add column if not exists main_concern text;
 
 -- ============================================================
+-- Pain level (0-10) the patient reports at booking time, before the
+-- healing session - distinct from session_feedback.pain_scale, which is
+-- reported after the session.
+-- ============================================================
+alter table public.bookings add column if not exists pain_level_before int check (pain_level_before between 0 and 10);
+
+-- ============================================================
 -- Post-session feedback / testimonials.
 -- ============================================================
 create table if not exists public.session_feedback (

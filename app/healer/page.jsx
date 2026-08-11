@@ -436,6 +436,11 @@ export default function HealerDashboard() {
                   <span className="font-medium text-slate-600">Main concern:</span> {b.main_concern}
                 </p>
               )}
+              {b.pain_level_before !== null && b.pain_level_before !== undefined && (
+                <p className="text-xs text-slate-500 bg-slate-50 rounded-lg px-2.5 py-1.5">
+                  <span className="font-medium text-slate-600">Pain level before:</span> {b.pain_level_before} / 10
+                </p>
+              )}
               {b.status === 'completed' && (
                 feedbackByBooking[b.id] ? (
                   <p className="text-xs bg-brand-mintSoft rounded-lg px-2.5 py-1.5">
