@@ -118,7 +118,7 @@ function PatientDashboardInner() {
   async function loadHealers() {
     const { data } = await supabase
       .from('healer_profiles')
-      .select('user_id, specialty_summary, bio, healer_categories(category_id)')
+      .select('user_id, bio, healer_categories(category_id)')
       .eq('is_active', true)
       .eq('approval_status', 'approved');
 
@@ -582,7 +582,7 @@ function PatientDashboardInner() {
                     {healers.map((h) => (
                       <option key={h.user_id} value={h.user_id}>
                         {h.profiles?.nickname || h.profiles?.full_name}
-                        {h.specialty_summary ? ` — ${h.specialty_summary}` : ''}
+                        {h.bio ? ` — ${h.bio.length > 60 ? `${h.bio.slice(0, 60)}…` : h.bio}` : ''}
                       </option>
                     ))}
                   </select>

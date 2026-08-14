@@ -40,11 +40,9 @@ export default function HealerProfilePage() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [nickname, setNickname] = useState('');
-  const [specialtySummary, setSpecialtySummary] = useState('');
   const [bio, setBio] = useState('');
   const [title, setTitle] = useState('');
   const [selectedCredentials, setSelectedCredentials] = useState([]);
-  const [additionalNotes, setAdditionalNotes] = useState('');
   const [location, setLocation] = useState('');
   const [allSpecializations, setAllSpecializations] = useState([]);
   const [selectedSpecializationIds, setSelectedSpecializationIds] = useState([]);
@@ -100,11 +98,10 @@ export default function HealerProfilePage() {
 
     const { data: healerProfile } = await supabase
       .from('healer_profiles')
-      .select('specialty_summary, bio, photo_url, title, credentials, specializes_in, additional_notes, location')
+      .select('bio, photo_url, title, credentials, specializes_in, location')
       .eq('user_id', user.id)
       .single();
     if (healerProfile) {
-      setSpecialtySummary(healerProfile.specialty_summary || '');
       setBio(healerProfile.bio || '');
       setTitle(healerProfile.title || '');
       // Existing free-text credentials get parsed into the fixed list where
@@ -115,7 +112,6 @@ export default function HealerProfilePage() {
           .map((c) => c.trim())
           .filter((c) => CREDENTIAL_OPTIONS.includes(c))
       );
-      setAdditionalNotes(healerProfile.additional_notes || '');
       setLocation(healerProfile.location || '');
       setPhotoUrl(healerProfile.photo_url || null);
     }
@@ -233,12 +229,10 @@ export default function HealerProfilePage() {
     await supabase
       .from('healer_profiles')
       .update({
-        specialty_summary: specialtySummary,
         bio,
         title,
         credentials: selectedCredentials.join('\n'),
         photo_url: currentPhotoUrl,
-        additional_notes: additionalNotes,
         location,
       })
       .eq('user_id', user.id);
@@ -312,6 +306,28 @@ export default function HealerProfilePage() {
       <section className="space-y-3">
         <h2 className="text-lg font-medium">Personal details</h2>
         <div>
+          <label className="block text-sm text-slate-500 mb-1">
+            Professional photo
+          </label>
+          {photoUrl && (
+            <img src={photoUrl} alt="Current photo" className="w-24 h-24 rounded-full object-cover mb-2" />
+          )}
+          {photoFile && !photoUrl && (
+            <p className="text-xs text-amber-600 mb-2">New photo selected — it'll upload when you save.</p>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
+            className="text-sm"
+          />
+          {!photoUrl && !photoFile && (
+            <p className="text-xs text-red-500 mt-1">
+              You must add a photo before you can save your profile or set your availability.
+            </p>
+          )}
+        </div>
+        <div>
           <label className="block text-sm text-slate-500 mb-1">Email</label>
           <input value={email} disabled className="w-full border border-slate-300 rounded px-3 py-2 bg-slate-50 text-slate-500" />
           <p className="text-[11px] text-slate-400 mt-1">
@@ -360,15 +376,6 @@ export default function HealerProfilePage() {
       <section className="space-y-3">
         <h2 className="text-lg font-medium">Professional details (patients will see this)</h2>
         <div>
-          <label className="block text-sm text-slate-500 mb-1">Specialty tagline</label>
-          <input
-            value={specialtySummary}
-            onChange={(e) => setSpecialtySummary(e.target.value)}
-            placeholder="A short line patients will see, e.g. 'Gentle, intuitive healing'"
-            className="w-full border border-slate-300 rounded px-3 py-2"
-          />
-        </div>
-        <div>
           <label className="block text-sm text-slate-500 mb-1">
             Categories (tag what you specialize in — patients filter by these)
           </label>
@@ -397,6 +404,9 @@ export default function HealerProfilePage() {
             rows={3}
             className="w-full border border-slate-300 rounded px-3 py-2"
           />
+          <p className="text-[11px] text-slate-400 mt-1">
+            Patients will see this on your public profile.
+          </p>
         </div>
 
         <div className="border-t pt-4 space-y-3">
@@ -462,17 +472,6 @@ export default function HealerProfilePage() {
             </div>
           </div>
           <div>
-            <label className="block text-sm text-slate-500 mb-1">
-              Additional notes (any extra detail patients should see)
-            </label>
-            <textarea
-              value={additionalNotes}
-              onChange={(e) => setAdditionalNotes(e.target.value)}
-              rows={3}
-              className="w-full border border-slate-300 rounded px-3 py-2"
-            />
-          </div>
-          <div>
             <label className="block text-sm text-slate-500 mb-1">Location</label>
             <input
               value={location}
@@ -481,28 +480,6 @@ export default function HealerProfilePage() {
               className="w-full border border-slate-300 rounded px-3 py-2"
             />
           </div>
-        </div>
-        <div>
-          <label className="block text-sm text-slate-500 mb-1">
-            Professional photo
-          </label>
-          {photoUrl && (
-            <img src={photoUrl} alt="Current photo" className="w-24 h-24 rounded-full object-cover mb-2" />
-          )}
-          {photoFile && !photoUrl && (
-            <p className="text-xs text-amber-600 mb-2">New photo selected — it'll upload when you save.</p>
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setPhotoFile(e.target.files?.[0] || null)}
-            className="text-sm"
-          />
-          {!photoUrl && !photoFile && (
-            <p className="text-xs text-red-500 mt-1">
-              You must add a photo before you can save your profile or set your availability.
-            </p>
-          )}
         </div>
       </section>
 

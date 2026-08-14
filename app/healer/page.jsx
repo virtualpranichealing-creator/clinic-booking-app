@@ -71,7 +71,7 @@ export default function HealerDashboard() {
     if (!user) return;
     const { data } = await supabase
       .from('healer_profiles')
-      .select('approval_status, specialty_summary, bio, title, photo_url')
+      .select('approval_status, bio, title, photo_url')
       .eq('user_id', user.id)
       .single();
     setApprovalStatus(data?.approval_status);
@@ -83,7 +83,7 @@ export default function HealerDashboard() {
       .single();
 
     setProfileComplete(
-      !!(data?.specialty_summary && data?.bio && data?.title && data?.photo_url && profileData?.mobile)
+      !!(data?.bio && data?.title && data?.photo_url && profileData?.mobile)
     );
   }
 
@@ -223,7 +223,7 @@ export default function HealerDashboard() {
         <section className="brand-card text-center py-10">
           <p className="text-brand-ink font-medium mb-1">Complete your profile first</p>
           <p className="text-sm text-slate-500 max-w-sm mx-auto mb-4">
-            Please fill in your specialty summary, title, bio, phone number, and a profile photo
+            Please fill in your title, bio, phone number, and a profile photo
             on your profile page before setting your weekly availability — patients see this
             before booking with you.
           </p>
