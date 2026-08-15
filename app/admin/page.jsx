@@ -270,7 +270,6 @@ function AdminDashboardInner() {
         calendarHealerFilter === 'all'
           ? `${icon} ${time} ${healerName(slot.healer_id)}${patientName ? ` - ${patientName}` : ''}`
           : `${icon} ${time} ${status.charAt(0).toUpperCase() + status.slice(1)}${patientName ? ` - ${patientName}` : ''}`;
-      const shortTitle = `${icon} ${time}`;
       // Only worth a separate nickname line on mobile when slots from every
       // healer are mixed together - filtered to one healer it's redundant.
       const shortHealerName = calendarHealerFilter === 'all' ? healerName(slot.healer_id) : null;
@@ -282,7 +281,7 @@ function AdminDashboardInner() {
         end: slot.end_time,
         backgroundColor: colors.bg,
         borderColor: colors.border,
-        extendedProps: { status, shortTitle, shortHealerName },
+        extendedProps: { status, icon, time, shortHealerName },
       };
     });
   }
@@ -764,16 +763,23 @@ function AdminDashboardInner() {
                 eventClassNames={(arg) => [`slot-status-${arg.event.extendedProps.status}`]}
                 eventContent={(arg) => {
                   const compact = isMobile && arg.view.type === 'dayGridMonth';
-                  const { shortTitle, shortHealerName } = arg.event.extendedProps;
+                  const { icon, time, shortHealerName } = arg.event.extendedProps;
                   return (
                     <div
                       title={arg.event.title}
-                      className="px-1 py-0.5 text-[11px] leading-tight whitespace-normal break-words"
+                      className={`px-1 py-0.5 leading-tight whitespace-normal break-words ${
+                        compact ? 'text-[9px]' : 'text-[11px]'
+                      }`}
                     >
-                      {compact && shortHealerName && (
-                        <div className="font-semibold truncate">{shortHealerName}</div>
+                      {compact ? (
+                        <>
+                          <div>{icon}</div>
+                          {shortHealerName && <div className="font-semibold break-words">{shortHealerName}</div>}
+                          <div>{time}</div>
+                        </>
+                      ) : (
+                        arg.event.title
                       )}
-                      {compact ? shortTitle : arg.event.title}
                     </div>
                   );
                 }}
