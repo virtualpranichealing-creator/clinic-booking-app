@@ -271,6 +271,9 @@ function AdminDashboardInner() {
           ? `${icon} ${time} ${healerName(slot.healer_id)}${patientName ? ` - ${patientName}` : ''}`
           : `${icon} ${time} ${status.charAt(0).toUpperCase() + status.slice(1)}${patientName ? ` - ${patientName}` : ''}`;
       const shortTitle = `${icon} ${time}`;
+      // Only worth a separate nickname line on mobile when slots from every
+      // healer are mixed together - filtered to one healer it's redundant.
+      const shortHealerName = calendarHealerFilter === 'all' ? healerName(slot.healer_id) : null;
 
       return {
         id: slot.id,
@@ -279,7 +282,7 @@ function AdminDashboardInner() {
         end: slot.end_time,
         backgroundColor: colors.bg,
         borderColor: colors.border,
-        extendedProps: { status, shortTitle },
+        extendedProps: { status, shortTitle, shortHealerName },
       };
     });
   }
@@ -761,12 +764,16 @@ function AdminDashboardInner() {
                 eventClassNames={(arg) => [`slot-status-${arg.event.extendedProps.status}`]}
                 eventContent={(arg) => {
                   const compact = isMobile && arg.view.type === 'dayGridMonth';
+                  const { shortTitle, shortHealerName } = arg.event.extendedProps;
                   return (
                     <div
                       title={arg.event.title}
                       className="px-1 py-0.5 text-[11px] leading-tight whitespace-normal break-words"
                     >
-                      {compact ? arg.event.extendedProps.shortTitle : arg.event.title}
+                      {compact && shortHealerName && (
+                        <div className="font-semibold truncate">{shortHealerName}</div>
+                      )}
+                      {compact ? shortTitle : arg.event.title}
                     </div>
                   );
                 }}
@@ -786,16 +793,16 @@ function AdminDashboardInner() {
           <h2 className="text-lg font-medium mb-3 text-brand-green">Pranic Healers ({healers.length})</h2>
           <ul className="space-y-2">
             {healers.map((h) => (
-              <li key={h.user_id} className="brand-card-tight flex justify-between items-center gap-3">
-                <Link href={`/admin/healers/${h.user_id}`} className="flex-1 min-w-0">
+              <li
+                key={h.user_id}
+                className="brand-card-tight flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <Link href={`/admin/healers/${h.user_id}`} className="sm:flex-1 sm:min-w-0">
                   <span className="text-brand-ink font-medium">
                     {h.profiles?.nickname || h.profiles?.full_name}
                   </span>
-                  <span className="text-slate-500 text-sm block sm:inline sm:ml-1">
-                    {h.specialty_summary ? `— ${h.specialty_summary}` : ''}
-                  </span>
                 </Link>
-                <div className="flex gap-2 items-center shrink-0">
+                <div className="flex gap-2 items-center flex-wrap shrink-0">
                   <span
                     className={
                       h.approval_status === 'approved'
