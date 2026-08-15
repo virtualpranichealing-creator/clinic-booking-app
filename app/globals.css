@@ -239,3 +239,40 @@ body {
 .fc-theme-standard th {
   border-color: #e7efe6;
 }
+
+/* The "+N more" day popover inherits --fc-page-bg-color for its background,
+   which we set to transparent above so the main grid blends with the page -
+   that left the popover transparent too, so events behind/around it bled
+   through and looked like an overlapping mess. Give it its own opaque card
+   styling instead, plus real spacing between stacked events so multi-line
+   event content (icon/nickname/time) doesn't visually run together. */
+.fc-theme-standard .fc-popover {
+  background-color: #ffffff !important;
+  border: 1px solid #d8e6d6 !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(31, 46, 34, 0.06), 0 20px 48px -16px rgba(61, 107, 74, 0.28) !important;
+  overflow: hidden;
+  max-width: calc(100vw - 2rem);
+}
+.fc-popover-header {
+  background-color: #eef6ec !important;
+  padding: 0.6rem 0.85rem !important;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  color: #1f2e22;
+}
+.fc-popover-body {
+  padding: 0.6rem !important;
+  max-height: min(60vh, 420px);
+  overflow-y: auto;
+}
+.fc-popover .fc-daygrid-event-harness {
+  position: relative !important;
+  margin-bottom: 0.4rem;
+}
+.fc-popover .fc-daygrid-event-harness:last-child {
+  margin-bottom: 0;
+}
+.fc-popover .fc-daygrid-event {
+  min-width: 7rem;
+}
