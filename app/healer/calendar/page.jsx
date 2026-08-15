@@ -68,15 +68,20 @@ export default function HealerCalendarPage() {
     return slot.current_status && slot.current_status !== 'available' ? slot.current_status : 'available';
   }
 
+  // "2 PM" for on-the-hour slots, "2:30 PM" otherwise - shorter and just as
+  // clear, which matters in the cramped mobile calendar cells.
+  function formatSlotTime(dateString, timeZone) {
+    const d = new Date(dateString);
+    return d.getMinutes() === 0
+      ? d.toLocaleTimeString([], { hour: 'numeric', timeZone })
+      : d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZone });
+  }
+
   function buildEvents() {
     return slots.map((slot) => {
       const status = getStatus(slot);
       const colors = STATUS_COLORS[status];
-      const time = new Date(slot.start_time).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: slot.slot_type_id === 'physical_healing' ? 'Asia/Manila' : timezone,
-      });
+      const time = formatSlotTime(slot.start_time, slot.slot_type_id === 'physical_healing' ? 'Asia/Manila' : timezone);
       const icon = slotTypeIcon(slot.slot_type_id);
       const patientName = slot.booking?.profiles?.full_name;
       const title = `${icon} ${time} ${status.charAt(0).toUpperCase() + status.slice(1)}${patientName ? ` - ${patientName}` : ''}`;
@@ -177,7 +182,12 @@ export default function HealerCalendarPage() {
             eventContent={(arg) => {
               const compact = isMobile && arg.view.type === 'dayGridMonth';
               return (
-                <div title={arg.event.title} className="px-1 py-0.5 text-[11px] leading-tight whitespace-normal break-words">
+                <div
+                  title={arg.event.title}
+                  className={`px-1 py-0.5 leading-tight whitespace-normal break-words ${
+                    compact ? 'text-[9px]' : 'text-[11px]'
+                  }`}
+                >
                   {compact ? arg.event.extendedProps.shortTitle : arg.event.title}
                 </div>
               );

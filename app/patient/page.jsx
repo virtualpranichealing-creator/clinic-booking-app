@@ -208,6 +208,15 @@ function PatientDashboardInner() {
     return h?.nickname || h?.full_name || 'Healer';
   }
 
+  // "2 PM" for on-the-hour slots, "2:30 PM" otherwise - shorter and just as
+  // clear, which matters in the cramped mobile calendar cells.
+  function formatSlotTime(dateString, timeZone) {
+    const d = new Date(dateString);
+    return d.getMinutes() === 0
+      ? d.toLocaleTimeString([], { hour: 'numeric', timeZone })
+      : d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', timeZone });
+  }
+
   function openBookingModal(slot) {
     if (getSlotStatus(slot) !== 'available') {
       window.alert('This slot is no longer available. Please choose an open (green) slot.');
@@ -326,19 +335,13 @@ function PatientDashboardInner() {
       // timezone preference - showing "their" time here would be misleading
       // about when to actually show up at the office.
       const slotTz = slot.slot_type_id === 'physical_healing' ? 'Asia/Manila' : timezone;
-      const time = new Date(slot.start_time).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: slotTz,
-      });
+      const time = formatSlotTime(slot.start_time, slotTz);
       const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
       const icon = slotTypeIcon(slot.slot_type_id);
       const title = includeHealerName
         ? `${icon} ${time} ${healerName(slot.healer_id)}`
         : `${icon} ${time} ${statusLabel}`;
-      const shortTitle = includeHealerName
-        ? `${icon} ${time} ${healerName(slot.healer_id)}`
-        : `${icon} ${time}`;
+      const shortHealerName = includeHealerName ? healerName(slot.healer_id) : null;
 
       return {
         id: slot.id,
@@ -347,7 +350,7 @@ function PatientDashboardInner() {
         end: slot.end_time,
         backgroundColor: colors.bg,
         borderColor: colors.border,
-        extendedProps: { status, shortTitle },
+        extendedProps: { status, icon, time, shortHealerName },
       };
     });
   }
@@ -394,12 +397,23 @@ function PatientDashboardInner() {
         eventClassNames={(arg) => [`slot-status-${arg.event.extendedProps.status}`]}
         eventContent={(arg) => {
           const compact = isMobile && arg.view.type === 'dayGridMonth';
+          const { icon, time, shortHealerName } = arg.event.extendedProps;
           return (
             <div
               title={arg.event.title}
-              className="px-1 py-0.5 text-[11px] leading-tight whitespace-normal break-words"
+              className={`px-1 py-0.5 leading-tight whitespace-normal break-words ${
+                compact ? 'text-[8px]' : 'text-[11px]'
+              }`}
             >
-              {compact ? arg.event.extendedProps.shortTitle : arg.event.title}
+              {compact ? (
+                <>
+                  <div>{icon}</div>
+                  {shortHealerName && <div className="font-semibold break-words">{shortHealerName}</div>}
+                  <div>{time}</div>
+                </>
+              ) : (
+                arg.event.title
+              )}
             </div>
           );
         }}

@@ -243,6 +243,15 @@ function AdminDashboardInner() {
     return h?.nickname || h?.full_name || 'Healer';
   }
 
+  // "2 PM" for on-the-hour slots, "2:30 PM" otherwise - shorter and just as
+  // clear, which matters in the cramped mobile calendar cells.
+  function formatSlotTime(dateString) {
+    const d = new Date(dateString);
+    return d.getMinutes() === 0
+      ? d.toLocaleTimeString([], { hour: 'numeric' })
+      : d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
   function getSlotStatus(slot) {
     if (slot.booking?.status === 'booked') return 'booked';
     if (slot.booking?.status === 'reserved') return 'reserved';
@@ -260,10 +269,7 @@ function AdminDashboardInner() {
     return filtered.map((slot) => {
       const status = getSlotStatus(slot);
       const colors = STATUS_COLORS[status];
-      const time = new Date(slot.start_time).toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
+      const time = formatSlotTime(slot.start_time);
       const patientName = slot.booking?.profiles?.full_name;
       const icon = slotTypeIcon(slot.slot_type_id);
       const title =
@@ -768,7 +774,7 @@ function AdminDashboardInner() {
                     <div
                       title={arg.event.title}
                       className={`px-1 py-0.5 leading-tight whitespace-normal break-words ${
-                        compact ? 'text-[9px]' : 'text-[11px]'
+                        compact ? 'text-[8px]' : 'text-[11px]'
                       }`}
                     >
                       {compact ? (
