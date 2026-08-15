@@ -7,10 +7,10 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-6">
       <AppNav />
 
-      <main className="max-w-5xl mx-auto px-6 py-14">
+      <main className="max-w-5xl mx-auto py-14">
         <div className="text-center max-w-2xl mx-auto mb-14">
           <h1 className="brand-heading-script">Project HOPE</h1>
           <p className="text-sm text-slate-500 mt-3 max-w-md mx-auto">

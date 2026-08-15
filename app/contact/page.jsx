@@ -7,10 +7,10 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-6">
       <AppNav />
 
-      <main className="max-w-3xl mx-auto px-6 py-14">
+      <main className="max-w-3xl mx-auto py-14">
         <div className="text-center max-w-md mx-auto mb-10">
           <h1 className="brand-heading-script">Contact Us</h1>
           <p className="text-sm text-slate-500 mt-2">

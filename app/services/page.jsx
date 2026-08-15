@@ -105,10 +105,10 @@ export default function ServicesPage() {
   const sixSession = packages.find((p) => p.session_count === 6);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-6">
       <AppNav />
 
-      <main className="max-w-5xl mx-auto px-6 py-10 space-y-10">
+      <main className="max-w-5xl mx-auto py-10 space-y-10">
         <div className="text-center max-w-2xl mx-auto">
           <h1 className="brand-heading-script">Our Services</h1>
           <p className="text-sm text-slate-500 mt-2">

@@ -49,10 +49,10 @@ export default function PublicHealersPage() {
     : healers;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen px-6">
       <AppNav />
 
-      <main className="max-w-5xl mx-auto px-6 py-10">
+      <main className="max-w-5xl mx-auto py-10">
         <div className="text-center mb-8">
           <h1 className="brand-heading-script">Meet All Our Pranic Healers</h1>
           <p className="text-sm text-slate-500 mt-2">

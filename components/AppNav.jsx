@@ -48,12 +48,18 @@ function AppNavInner() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState('loading'); // 'loading' | 'out' | 'patient' | 'healer' | 'admin'
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     checkSession();
     const { data: listener } = supabase.auth.onAuthStateChange(() => checkSession());
     return () => listener.subscription.unsubscribe();
   }, []);
+
+  // Collapse the mobile menu whenever the route actually changes.
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname, searchParams]);
 
   async function checkSession() {
     const { data: { session } } = await supabase.auth.getSession();
@@ -90,7 +96,8 @@ function AppNavInner() {
           <img src="/project-hope-logo.png" alt="Project HOPE" className="h-9" />
         </Link>
 
-        <nav className="flex items-center gap-1 flex-wrap">
+        {/* Desktop/tablet: full row of tab pills */}
+        <nav className="hidden sm:flex items-center gap-1 flex-wrap">
           {status !== 'loading' &&
             tabs.map((tab) => {
               const active = isActive(tab.href);
@@ -120,7 +127,53 @@ function AppNavInner() {
             </span>
           )}
         </nav>
+
+        {/* Mobile: hamburger toggle instead of the full tab row, so the
+            header stays one compact line rather than wrapping into rows. */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          className="sm:hidden ml-auto inline-flex items-center justify-center w-10 h-10 rounded-full border border-slate-200 text-lg text-brand-ink/70 hover:bg-brand-mintSoft shrink-0"
+        >
+          {menuOpen ? '✕' : '☰'}
+        </button>
       </div>
+
+      {/* Mobile: collapsible menu panel */}
+      {menuOpen && (
+        <nav className="sm:hidden max-w-7xl mx-auto px-2 mt-3 flex flex-col gap-1">
+          {status !== 'loading' &&
+            tabs.map((tab) => {
+              const active = isActive(tab.href);
+              return (
+                <Link
+                  key={tab.href}
+                  href={tab.href}
+                  className={`text-sm font-medium px-3.5 py-2.5 rounded-xl transition-all duration-150 ${
+                    active
+                      ? 'bg-brand-green text-white shadow-sm'
+                      : 'text-brand-ink/70 border border-slate-200 hover:bg-brand-mintSoft hover:border-brand-green/30 hover:text-brand-green'
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              );
+            })}
+
+          {status === 'out' && (
+            <Link href="/login" className="btn-primary btn-sm text-center mt-1">
+              Log in / Sign up
+            </Link>
+          )}
+          {status !== 'loading' && status !== 'out' && (
+            <span className="mt-1">
+              <SignOutButton />
+            </span>
+          )}
+        </nav>
+      )}
     </div>
   );
 }
