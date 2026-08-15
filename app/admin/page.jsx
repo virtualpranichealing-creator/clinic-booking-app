@@ -28,6 +28,37 @@ const SPLIT_LABELS = [
   { key: 'admin_amount', label: 'Project HOPE Admin', pct: '18%' },
 ];
 
+// Field definitions for the custom report builder - each key matches a
+// property on the row objects built by fetchHealerReportRows/fetchPatientReportRows.
+const HEALER_REPORT_FIELDS = [
+  { key: 'full_name', label: 'Full name' },
+  { key: 'nickname', label: 'Nickname' },
+  { key: 'email', label: 'Email' },
+  { key: 'mobile', label: 'Mobile' },
+  { key: 'title', label: 'Title' },
+  { key: 'approval_status', label: 'Approval status' },
+  { key: 'is_active', label: 'Active' },
+  { key: 'location', label: 'Location' },
+  { key: 'bio', label: 'Bio' },
+  { key: 'categories', label: 'Categories' },
+  { key: 'specializations', label: 'Specializations' },
+  { key: 'created_at', label: 'Signed up' },
+];
+
+const PATIENT_REPORT_FIELDS = [
+  { key: 'full_name', label: 'Full name' },
+  { key: 'nickname', label: 'Nickname' },
+  { key: 'email', label: 'Email' },
+  { key: 'mobile', label: 'Mobile' },
+  { key: 'age', label: 'Age' },
+  { key: 'gender', label: 'Gender' },
+  { key: 'reason_for_healing', label: 'Reason for healing' },
+  { key: 'patient_status', label: 'Status' },
+  { key: 'referred_by_name', label: 'Referred by' },
+  { key: 'consent_agreed', label: 'Consent agreed' },
+  { key: 'created_at', label: 'Signed up' },
+];
+
 function ProofLink({ bucket, path, label }) {
   const [url, setUrl] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -89,6 +120,15 @@ function AdminDashboardInner() {
 
   // Reports tab state - which download button is currently in flight
   const [reportsLoading, setReportsLoading] = useState(null);
+
+  // Custom report builder state - pick a dataset, check which fields to
+  // include, preview it, then export exactly what's shown.
+  const [builderType, setBuilderType] = useState('healers'); // 'healers' | 'patients'
+  const [builderFields, setBuilderFields] = useState(() =>
+    Object.fromEntries(HEALER_REPORT_FIELDS.map((f) => [f.key, true]))
+  );
+  const [builderRows, setBuilderRows] = useState(null);
+  const [builderLoading, setBuilderLoading] = useState(false);
 
   useEffect(() => {
     loadPending();
@@ -261,6 +301,83 @@ function AdminDashboardInner() {
     const { data } = await supabase.from('specializations').select('label').order('display_order');
     downloadCSV('specializations.csv', (data || []).map((s) => ({ Specialization: s.label })));
     setReportsLoading(null);
+  }
+
+  async function fetchHealerReportRows() {
+    const { data } = await supabase
+      .from('healer_profiles')
+      .select(
+        `title, location, bio, approval_status, is_active,
+         profiles(full_name, nickname, email, mobile, created_at),
+         healer_categories(categories(name)),
+         healer_specializations(specializations(label))`
+      );
+    return (data || []).map((h) => ({
+      full_name: h.profiles?.full_name || '',
+      nickname: h.profiles?.nickname || '',
+      email: h.profiles?.email || '',
+      mobile: h.profiles?.mobile || '',
+      title: h.title || '',
+      approval_status: h.approval_status || '',
+      is_active: h.is_active ? 'Yes' : 'No',
+      location: h.location || '',
+      bio: h.bio || '',
+      categories: (h.healer_categories || []).map((c) => c.categories?.name).filter(Boolean).join('; '),
+      specializations: (h.healer_specializations || []).map((s) => s.specializations?.label).filter(Boolean).join('; '),
+      created_at: h.profiles?.created_at ? new Date(h.profiles.created_at).toLocaleDateString() : '',
+    }));
+  }
+
+  async function fetchPatientReportRows() {
+    const { data } = await supabase
+      .from('profiles')
+      .select('full_name, nickname, email, mobile, age, gender, reason_for_healing, patient_status, referred_by_name, consent_agreed, created_at')
+      .eq('role', 'patient')
+      .order('created_at', { ascending: false });
+    return (data || []).map((p) => ({
+      full_name: p.full_name || '',
+      nickname: p.nickname || '',
+      email: p.email || '',
+      mobile: p.mobile || '',
+      age: p.age ?? '',
+      gender: p.gender || '',
+      reason_for_healing: p.reason_for_healing || '',
+      patient_status: p.patient_status || '',
+      referred_by_name: p.referred_by_name || '',
+      consent_agreed: p.consent_agreed ? 'Yes' : 'No',
+      created_at: p.created_at ? new Date(p.created_at).toLocaleDateString() : '',
+    }));
+  }
+
+  function builderFieldDefs() {
+    return builderType === 'healers' ? HEALER_REPORT_FIELDS : PATIENT_REPORT_FIELDS;
+  }
+
+  function changeBuilderType(type) {
+    setBuilderType(type);
+    setBuilderRows(null); // stale preview from the other dataset - force a fresh "Generate preview"
+    const fields = type === 'healers' ? HEALER_REPORT_FIELDS : PATIENT_REPORT_FIELDS;
+    setBuilderFields(Object.fromEntries(fields.map((f) => [f.key, true])));
+  }
+
+  function toggleBuilderField(key) {
+    setBuilderFields((prev) => ({ ...prev, [key]: !prev[key] }));
+  }
+
+  async function generateBuilderPreview() {
+    setBuilderLoading(true);
+    const rows = builderType === 'healers' ? await fetchHealerReportRows() : await fetchPatientReportRows();
+    setBuilderRows(rows);
+    setBuilderLoading(false);
+  }
+
+  function downloadBuilderReport() {
+    const activeFields = builderFieldDefs().filter((f) => builderFields[f.key]);
+    if (!builderRows || activeFields.length === 0) return;
+    downloadCSV(
+      `custom-${builderType}-report.csv`,
+      builderRows.map((row) => Object.fromEntries(activeFields.map((f) => [f.label, row[f.key]])))
+    );
   }
 
   async function loadAllBookings() {
@@ -1230,6 +1347,100 @@ function AdminDashboardInner() {
                 {reportsLoading === 'specializations' ? 'Preparing…' : 'Download CSV'}
               </button>
             </div>
+          </div>
+
+          {/* Custom report builder - pick a dataset, check which fields to
+              include, preview it, then export exactly what's shown. */}
+          <div className="brand-card space-y-4">
+            <div>
+              <h3 className="font-medium text-brand-ink mb-1">Custom report builder</h3>
+              <p className="text-sm text-slate-500">
+                Pick which fields to include, preview the table, and only export once it looks right.
+              </p>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => changeBuilderType('healers')}
+                className={builderType === 'healers' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'}
+              >
+                Healers
+              </button>
+              <button
+                onClick={() => changeBuilderType('patients')}
+                className={builderType === 'patients' ? 'btn-primary btn-sm' : 'btn-ghost btn-sm'}
+              >
+                Patients
+              </button>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold text-slate-500 mb-1.5">Fields to include</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5">
+                {builderFieldDefs().map((f) => (
+                  <label key={f.key} className="flex items-center gap-1.5 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={!!builderFields[f.key]}
+                      onChange={() => toggleBuilderField(f.key)}
+                    />
+                    {f.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <button onClick={generateBuilderPreview} disabled={builderLoading} className="btn-secondary btn-sm">
+                {builderLoading ? 'Loading…' : 'Generate preview'}
+              </button>
+              <button
+                onClick={downloadBuilderReport}
+                disabled={!builderRows || builderFieldDefs().every((f) => !builderFields[f.key])}
+                className="btn-primary btn-sm"
+              >
+                Download CSV
+              </button>
+            </div>
+
+            {builderRows && (
+              <div className="overflow-x-auto border border-slate-200 rounded-xl">
+                <table className="text-xs w-full">
+                  <thead>
+                    <tr className="bg-brand-mintSoft">
+                      {builderFieldDefs()
+                        .filter((f) => builderFields[f.key])
+                        .map((f) => (
+                          <th key={f.key} className="text-left font-semibold text-brand-green px-3 py-2 whitespace-nowrap">
+                            {f.label}
+                          </th>
+                        ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {builderRows.length === 0 ? (
+                      <tr>
+                        <td className="px-3 py-3 text-slate-400 italic" colSpan={builderFieldDefs().filter((f) => builderFields[f.key]).length || 1}>
+                          No {builderType} found.
+                        </td>
+                      </tr>
+                    ) : (
+                      builderRows.map((row, i) => (
+                        <tr key={i} className="border-t border-slate-100">
+                          {builderFieldDefs()
+                            .filter((f) => builderFields[f.key])
+                            .map((f) => (
+                              <td key={f.key} className="px-3 py-2 text-slate-600 whitespace-nowrap max-w-xs truncate">
+                                {row[f.key] || '—'}
+                              </td>
+                            ))}
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </section>
       )}
