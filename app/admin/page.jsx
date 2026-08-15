@@ -118,9 +118,6 @@ function AdminDashboardInner() {
   const [payoutsLoading, setPayoutsLoading] = useState(true);
   const [uploadingFor, setUploadingFor] = useState(null);
 
-  // Reports tab state - which download button is currently in flight
-  const [reportsLoading, setReportsLoading] = useState(null);
-
   // Custom report builder state - pick a dataset, check which fields to
   // include, preview it, then export exactly what's shown.
   const [builderType, setBuilderType] = useState('healers'); // 'healers' | 'patients'
@@ -237,70 +234,6 @@ function AdminDashboardInner() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  }
-
-  async function downloadHealersReport() {
-    setReportsLoading('healers');
-    const { data } = await supabase
-      .from('healer_profiles')
-      .select(
-        `approval_status, is_active, title, location,
-         profiles(full_name, nickname, email, mobile, created_at),
-         healer_categories(categories(name)),
-         healer_specializations(specializations(label))`
-      );
-    downloadCSV(
-      'healers-summary.csv',
-      (data || []).map((h) => ({
-        'Full name': h.profiles?.full_name || '',
-        Nickname: h.profiles?.nickname || '',
-        Email: h.profiles?.email || '',
-        Mobile: h.profiles?.mobile || '',
-        Title: h.title || '',
-        'Approval status': h.approval_status || '',
-        Active: h.is_active ? 'Yes' : 'No',
-        Location: h.location || '',
-        Categories: (h.healer_categories || []).map((c) => c.categories?.name).filter(Boolean).join('; '),
-        Specializations: (h.healer_specializations || []).map((s) => s.specializations?.label).filter(Boolean).join('; '),
-        'Signed up': h.profiles?.created_at ? new Date(h.profiles.created_at).toLocaleDateString() : '',
-      }))
-    );
-    setReportsLoading(null);
-  }
-
-  async function downloadPatientsReport() {
-    setReportsLoading('patients');
-    const { data } = await supabase
-      .from('profiles')
-      .select('full_name, nickname, email, mobile, patient_status, created_at')
-      .eq('role', 'patient')
-      .order('created_at', { ascending: false });
-    downloadCSV(
-      'patients-summary.csv',
-      (data || []).map((p) => ({
-        'Full name': p.full_name || '',
-        Nickname: p.nickname || '',
-        Email: p.email || '',
-        Mobile: p.mobile || '',
-        Status: p.patient_status || '',
-        'Signed up': p.created_at ? new Date(p.created_at).toLocaleDateString() : '',
-      }))
-    );
-    setReportsLoading(null);
-  }
-
-  async function downloadCategoriesReport() {
-    setReportsLoading('categories');
-    const { data } = await supabase.from('categories').select('name').order('name');
-    downloadCSV('categories.csv', (data || []).map((c) => ({ Category: c.name })));
-    setReportsLoading(null);
-  }
-
-  async function downloadSpecializationsReport() {
-    setReportsLoading('specializations');
-    const { data } = await supabase.from('specializations').select('label').order('display_order');
-    downloadCSV('specializations.csv', (data || []).map((s) => ({ Specialization: s.label })));
-    setReportsLoading(null);
   }
 
   async function fetchHealerReportRows() {
@@ -1286,67 +1219,9 @@ function AdminDashboardInner() {
           <div>
             <h2 className="text-lg font-medium text-brand-green mb-1">Reports</h2>
             <p className="text-sm text-slate-500">
-              Download the current data as a CSV file (opens in Excel/Google Sheets) - handy for
-              putting together a document to share or get sign-off on.
+              Build a report from the current data and export it as a CSV file (opens in
+              Excel/Google Sheets) - handy for putting together a document to share or get sign-off on.
             </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-3">
-            <div className="brand-card-tight flex items-center justify-between gap-3">
-              <div>
-                <p className="font-medium text-brand-ink">Healers summary</p>
-                <p className="text-xs text-slate-500">Name, contact, status, categories, specializations</p>
-              </div>
-              <button
-                onClick={downloadHealersReport}
-                disabled={reportsLoading === 'healers'}
-                className="btn-primary btn-sm whitespace-nowrap"
-              >
-                {reportsLoading === 'healers' ? 'Preparing…' : 'Download CSV'}
-              </button>
-            </div>
-
-            <div className="brand-card-tight flex items-center justify-between gap-3">
-              <div>
-                <p className="font-medium text-brand-ink">Patients summary</p>
-                <p className="text-xs text-slate-500">Name, contact, status, signup date</p>
-              </div>
-              <button
-                onClick={downloadPatientsReport}
-                disabled={reportsLoading === 'patients'}
-                className="btn-primary btn-sm whitespace-nowrap"
-              >
-                {reportsLoading === 'patients' ? 'Preparing…' : 'Download CSV'}
-              </button>
-            </div>
-
-            <div className="brand-card-tight flex items-center justify-between gap-3">
-              <div>
-                <p className="font-medium text-brand-ink">Categories</p>
-                <p className="text-xs text-slate-500">The full list patients filter by</p>
-              </div>
-              <button
-                onClick={downloadCategoriesReport}
-                disabled={reportsLoading === 'categories'}
-                className="btn-primary btn-sm whitespace-nowrap"
-              >
-                {reportsLoading === 'categories' ? 'Preparing…' : 'Download CSV'}
-              </button>
-            </div>
-
-            <div className="brand-card-tight flex items-center justify-between gap-3">
-              <div>
-                <p className="font-medium text-brand-ink">Specializations</p>
-                <p className="text-xs text-slate-500">The full list healers tag on their profile</p>
-              </div>
-              <button
-                onClick={downloadSpecializationsReport}
-                disabled={reportsLoading === 'specializations'}
-                className="btn-primary btn-sm whitespace-nowrap"
-              >
-                {reportsLoading === 'specializations' ? 'Preparing…' : 'Download CSV'}
-              </button>
-            </div>
           </div>
 
           {/* Custom report builder - pick a dataset, check which fields to
