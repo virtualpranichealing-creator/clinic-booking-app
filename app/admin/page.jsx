@@ -6,6 +6,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import AppNav from '../../components/AppNav';
 import PatientFeedbackPreview from '../../components/previews/PatientFeedbackPreview';
 import HealerNotePreview from '../../components/previews/HealerNotePreview';
+import HealerDashboardPreview from '../../components/previews/HealerDashboardPreview';
+import PatientDashboardPreview from '../../components/previews/PatientDashboardPreview';
 import { supabase } from '../../lib/supabaseClient';
 import { slotTypeIcon } from '../../lib/slotTypeIcons';
 import { sessionTypeLabel } from '../../lib/sessionTypeLabel';
@@ -1050,6 +1052,26 @@ function AdminDashboardInner() {
       {activeTab === 'interactive' && (
         <section className="space-y-10">
           <div>
+            <h2 className="text-lg font-medium text-brand-green mb-1">View as a healer / patient</h2>
+            <p className="text-sm text-slate-500">
+              A simulated walkthrough of what a healer's or patient's dashboard looks like, using
+              made-up sample data — not a real account. Fully interactive, so you can click around
+              and get a feel for the experience without opening anyone's real data. Nothing here is
+              saved anywhere.
+            </p>
+          </div>
+
+          <div>
+            <h3 className="text-base font-medium text-brand-ink mb-3">🧑‍⚕️ Healer Dashboard</h3>
+            <HealerDashboardPreview />
+          </div>
+
+          <div>
+            <h3 className="text-base font-medium text-brand-ink mb-3">🧘 Patient Booking Flow</h3>
+            <PatientDashboardPreview />
+          </div>
+
+          <div className="border-t border-slate-100 pt-8">
             <h2 className="text-lg font-medium text-brand-green mb-1">Live form previews</h2>
             <p className="text-sm text-slate-500">
               These are the exact same forms your patients and healers fill out — fully
