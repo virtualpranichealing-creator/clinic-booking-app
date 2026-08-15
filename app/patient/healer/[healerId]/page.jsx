@@ -122,6 +122,7 @@ export default function HealerPublicProfilePage() {
                 "{healer.profiles.nickname}"
               </p>
             )}
+            {healer?.bio && <p className="text-sm text-slate-600 mt-2">{healer.bio}</p>}
             {healer?.location && (
               <p className="text-sm text-slate-500 mt-2">📍 {healer.location}</p>
             )}
@@ -162,8 +163,6 @@ export default function HealerPublicProfilePage() {
             {healer?.additional_notes && (
               <div className="text-sm italic whitespace-pre-line">{healer.additional_notes}</div>
             )}
-
-            {healer?.bio && <p className="text-sm text-slate-600">{healer.bio}</p>}
 
             {viewerRole && (
               <button
