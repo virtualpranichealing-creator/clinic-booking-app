@@ -73,6 +73,36 @@ export default function PatientHealingJourneyReport() {
     return (patient?.nickname || patient?.full_name || 'patient').trim().replace(/\s+/g, '-').toLowerCase();
   }
 
+  // A compact one-line chakra summary instead of a bulleted list per chakra,
+  // to keep the "case" document short even for patients with many sessions.
+  // Notes are dropped here to save space but stay in the full CSV export.
+  function summarizeObservations(note) {
+    if (!note?.observation_items?.length) return '';
+    return note.observation_items
+      .map((item) => `${item.chakras?.label || item.body_part} (${item.status})`)
+      .join(', ');
+  }
+
+  // First recorded "before" pain level vs. the most recent "after" pain
+  // level across every session, so a case reviewer can see the overall
+  // trend at a glance instead of reading every session.
+  function progressSummary() {
+    const firstBefore = bookings.find((b) => b.pain_level_before != null)?.pain_level_before;
+    const feedbackWithPain = bookings
+      .map((b) => feedbackByBooking[b.id])
+      .filter((fb) => fb?.pain_scale != null);
+    const lastAfter = feedbackWithPain.length ? feedbackWithPain[feedbackWithPain.length - 1].pain_scale : null;
+    const avgImproved = feedbackWithPain.length
+      ? Math.round(
+          bookings
+            .map((b) => feedbackByBooking[b.id]?.symptoms_improved_pct)
+            .filter((v) => v != null)
+            .reduce((sum, v, _, arr) => sum + v / arr.length, 0)
+        )
+      : null;
+    return { firstBefore, lastAfter, avgImproved, sessionsWithFeedback: feedbackWithPain.length };
+  }
+
   function downloadCSV() {
     const escapeCell = (val) => `"${String(val ?? '').replace(/"/g, '""')}"`;
     const lines = [];
@@ -93,7 +123,7 @@ export default function PatientHealingJourneyReport() {
 
     if (sections.bookings) {
       const headers = ['Session #', 'Date', 'Session type', 'Healer', 'Status'];
-      if (sections.feedback) headers.push('Rating (of 5)', 'Pain (0-10)', 'Improved %', 'Testimonial');
+      if (sections.feedback) headers.push('Pain before', 'Pain after', 'Rating (of 5)', 'Improved %', 'Testimonial');
       if (sections.notes) headers.push('Session notes summary', 'Observations');
       lines.push(headers.map(escapeCell).join(','));
 
@@ -108,7 +138,13 @@ export default function PatientHealingJourneyReport() {
           b.status,
         ];
         if (sections.feedback) {
-          row.push(fb?.star_rating ?? '', fb?.pain_scale ?? '', fb?.symptoms_improved_pct ?? '', fb?.experience_text ?? '');
+          row.push(
+            b.pain_level_before ?? '',
+            fb?.pain_scale ?? '',
+            fb?.star_rating ?? '',
+            fb?.symptoms_improved_pct ?? '',
+            fb?.experience_text ?? ''
+          );
         }
         if (sections.notes) {
           row.push(
@@ -237,6 +273,34 @@ export default function PatientHealingJourneyReport() {
               <dd>{bookings.length}</dd>
             </div>
           </dl>
+
+          {(() => {
+            const { firstBefore, lastAfter, avgImproved, sessionsWithFeedback } = progressSummary();
+            if (firstBefore == null && lastAfter == null) return null;
+            return (
+              <div className="mt-3 bg-brand-mintSoft rounded-lg px-3 py-2 text-sm flex flex-wrap gap-x-6 gap-y-1">
+                {firstBefore != null && (
+                  <span>
+                    <span className="text-slate-500">Pain level, first session:</span>{' '}
+                    <span className="font-semibold text-brand-ink">{firstBefore}/10</span>
+                  </span>
+                )}
+                {lastAfter != null && (
+                  <span>
+                    <span className="text-slate-500">Most recent:</span>{' '}
+                    <span className="font-semibold text-brand-ink">{lastAfter}/10</span>
+                  </span>
+                )}
+                {avgImproved != null && (
+                  <span>
+                    <span className="text-slate-500">Avg. improvement reported:</span>{' '}
+                    <span className="font-semibold text-brand-ink">{avgImproved}%</span>{' '}
+                    <span className="text-slate-400">({sessionsWithFeedback} session{sessionsWithFeedback === 1 ? '' : 's'} with feedback)</span>
+                  </span>
+                )}
+              </div>
+            );
+          })()}
         </section>
       )}
 
@@ -263,18 +327,23 @@ export default function PatientHealingJourneyReport() {
                       {b.healer_profiles?.profiles?.nickname || b.healer_profiles?.profiles?.full_name || 'a healer'}
                     </p>
 
-                    {sections.feedback && fb && (
+                    {sections.feedback && (b.pain_level_before != null || fb) && (
                       <div className="bg-brand-mintSoft rounded-lg px-3 py-2 text-xs space-y-1 mb-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-amber-600">
-                            {'★'.repeat(fb.star_rating)}
-                            {'☆'.repeat(5 - fb.star_rating)}
-                          </span>
+                        <div className="flex items-center justify-between flex-wrap gap-1">
+                          {fb && (
+                            <span className="text-amber-600">
+                              {'★'.repeat(fb.star_rating)}
+                              {'☆'.repeat(5 - fb.star_rating)}
+                            </span>
+                          )}
                           <span className="text-slate-600">
-                            Pain {fb.pain_scale}/10 · {fb.symptoms_improved_pct}% improved
+                            {b.pain_level_before != null && `Pain before: ${b.pain_level_before}/10`}
+                            {b.pain_level_before != null && fb?.pain_scale != null && ' → '}
+                            {fb?.pain_scale != null && `after: ${fb.pain_scale}/10`}
+                            {fb?.symptoms_improved_pct != null && ` · ${fb.symptoms_improved_pct}% improved`}
                           </span>
                         </div>
-                        {fb.experience_text && <p className="text-slate-700 italic">"{fb.experience_text}"</p>}
+                        {fb?.experience_text && <p className="text-slate-700 italic">"{fb.experience_text}"</p>}
                       </div>
                     )}
 
@@ -282,21 +351,15 @@ export default function PatientHealingJourneyReport() {
                       <div className="border-t border-slate-100 pt-2 text-xs space-y-1">
                         <p className="font-medium text-slate-600">Healer's session notes</p>
                         {note.summary && <p className="text-slate-700">{note.summary}</p>}
-                        {note.observation_items?.length > 0 && (
-                          <ul className="text-slate-600 space-y-0.5">
-                            {note.observation_items.map((item) => (
-                              <li key={item.id}>
-                                {item.chakras?.label || item.body_part}:{' '}
-                                <span className="capitalize">{item.status}</span>
-                                {item.notes ? ` — ${item.notes}` : ''}
-                              </li>
-                            ))}
-                          </ul>
+                        {summarizeObservations(note) && (
+                          <p className="text-slate-600">
+                            <span className="font-medium">Chakras:</span> {summarizeObservations(note)}
+                          </p>
                         )}
                       </div>
                     )}
 
-                    {!(sections.feedback && fb) && !(sections.notes && note) && (
+                    {!(sections.feedback && (b.pain_level_before != null || fb)) && !(sections.notes && note) && (
                       <p className="text-xs text-slate-400 italic">No feedback or session notes recorded yet.</p>
                     )}
                   </div>
