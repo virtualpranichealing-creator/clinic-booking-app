@@ -356,7 +356,7 @@ function PatientDashboardInner() {
     return (
       <div>
         <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
-          <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-slate-500">
+          <div className="flex flex-wrap items-center gap-2.5 text-xs text-slate-500">
             <span>🩺 Consultation</span>
             <span>🌿 Online Healing</span>
             <span>📍 Onsite (Ortigas)</span>
@@ -376,7 +376,7 @@ function PatientDashboardInner() {
             </select>
           </div>
         </div>
-        <p className="text-[11px] text-slate-400 text-right mb-2">
+        <p className="text-xs text-slate-400 text-right mb-2">
           📍 Onsite (Ortigas) sessions always show Philippine time, since that's where you'll need to be.
         </p>
         <FullCalendar
@@ -687,10 +687,10 @@ function PatientDashboardInner() {
                 onChange={(e) => setMainConcern(e.target.value)}
                 rows={3}
                 placeholder="e.g. lower back pain, stress and anxiety, trouble sleeping…"
-                className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm resize-none"
+                className="w-full border border-slate-300 rounded-xl px-3 py-2 text-base resize-none"
                 required
               />
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="text-xs text-slate-400 mt-1">
                 This will be shared with your healer so they can prepare for your session.
               </p>
             </div>
@@ -715,7 +715,7 @@ function PatientDashboardInner() {
                   </button>
                 ))}
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">0 = No pain · 10 = Worst possible pain</p>
+              <p className="text-xs text-slate-400 mt-1">0 = No pain · 10 = Worst possible pain</p>
             </div>
 
             {bookingSlot.slot_type_id === 'physical_healing' ? (
@@ -773,7 +773,7 @@ function PatientDashboardInner() {
 
   {paymentMethod === 'qr_maribank' ? (
     <div className="text-center space-y-2 mt-1">
-      <p className="text-[11px] text-slate-500 font-medium">Scan this MariBank QR code using your bank app:</p>
+      <p className="text-xs text-slate-500 font-medium">Scan this MariBank QR code using your bank app:</p>
       <div className="inline-block p-1.5 bg-white rounded-xl border border-slate-200 shadow-sm">
 <img 
   src="https://yyslpzxsfslvdegayswa.supabase.co/storage/v1/object/sign/payment-proofs/maribank-qr.jpg?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV81OTNiY2RlNi00Njc2LTQ1MzItOTgyZC01OWM1MzY4Y2Y1OTUiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJwYXltZW50LXByb29mcy9tYXJpYmFuay1xci5qcGciLCJzY29wZSI6ImRvd25sb2FkIiwiaWF0IjoxNzg1NDcyNDMwLCJleHAiOjE4MTcwMDg0MzB9.4sQLsv1JH5NCBxDdXsQtg94LRqO5SuZT_FMgBQLuRKI" 
@@ -784,7 +784,7 @@ function PatientDashboardInner() {
     </div>
   ) : (
     <div className="w-full space-y-2 mt-1 text-center">
-      <p className="text-[11px] text-slate-500 font-medium">Send payment directly to our PayPal account:</p>
+      <p className="text-xs text-slate-500 font-medium">Send payment directly to our PayPal account:</p>
       <div className="flex items-center gap-2 max-w-xs mx-auto">
         <input
           type="text"

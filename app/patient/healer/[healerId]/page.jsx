@@ -193,7 +193,7 @@ export default function HealerPublicProfilePage() {
                     <p className="text-sm text-slate-600 italic">"{t.experience_text}"</p>
                   )}
                   {t.symptoms_improved_pct != null && (
-                    <p className="text-[11px] text-slate-400 mt-2">
+                    <p className="text-xs text-slate-400 mt-2">
                       Reported {t.symptoms_improved_pct}% symptom improvement
                     </p>
                   )}

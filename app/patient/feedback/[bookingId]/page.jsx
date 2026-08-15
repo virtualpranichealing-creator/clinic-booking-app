@@ -210,7 +210,7 @@ export default function LeaveFeedbackPage() {
           <label className="brand-label">
             How was your overall experience with today's healing session?
           </label>
-          <p className="text-[11px] text-slate-400 mb-1.5">
+          <p className="text-xs text-slate-400 mb-1.5">
             This may be shared as an anonymous testimonial only if you check the box below to allow it.
           </p>
           <textarea
@@ -218,13 +218,13 @@ export default function LeaveFeedbackPage() {
             onChange={(e) => setExperienceText(e.target.value)}
             rows={4}
             placeholder="Share as much or as little as you'd like…"
-            className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm resize-none"
+            className="w-full border border-slate-300 rounded-xl px-3 py-2 text-base resize-none"
           />
         </div>
 
         <div className="border-t border-slate-100 pt-5">
           <label className="brand-label">Anything you'd like to tell your healer privately?</label>
-          <p className="text-[11px] text-slate-400 mb-1.5">
+          <p className="text-xs text-slate-400 mb-1.5">
             🔒 This note is private — only your healer will see it. It will never be shown publicly
             or shared as a testimonial.
           </p>
@@ -233,7 +233,7 @@ export default function LeaveFeedbackPage() {
             onChange={(e) => setPrivateNote(e.target.value)}
             rows={3}
             placeholder="Optional — anything specific for your healer only…"
-            className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm resize-none"
+            className="w-full border border-slate-300 rounded-xl px-3 py-2 text-base resize-none"
           />
         </div>
 

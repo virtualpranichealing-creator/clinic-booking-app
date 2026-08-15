@@ -6,6 +6,12 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // Slightly larger than Tailwind's defaults (xs: 12px→13px, sm: 14px→15px)
+      // so the app's smallest, most-used text sizes stay legible on phones.
+      fontSize: {
+        xs: ['0.8125rem', { lineHeight: '1.25rem' }],
+        sm: ['0.9375rem', { lineHeight: '1.5rem' }],
+      },
       colors: {
         brand: {
           green: '#3D6B4A',

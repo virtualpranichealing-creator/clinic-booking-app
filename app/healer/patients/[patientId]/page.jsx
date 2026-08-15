@@ -215,7 +215,7 @@ export default function HealerPatientDetailPage() {
                 <select
                   value={chakraTags[c.id]?.status || ''}
                   onChange={(e) => updateChakraTag(c.id, 'status', e.target.value)}
-                  className="border border-slate-300 rounded px-2 py-1 text-sm"
+                  className="border border-slate-300 rounded px-2 py-1 text-base"
                 >
                   {STATUS_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value}>
@@ -228,7 +228,7 @@ export default function HealerPatientDetailPage() {
                   placeholder="Notes (optional)"
                   value={chakraTags[c.id]?.notes || ''}
                   onChange={(e) => updateChakraTag(c.id, 'notes', e.target.value)}
-                  className="border border-slate-300 rounded px-2 py-1 text-sm flex-1 min-w-[150px]"
+                  className="border border-slate-300 rounded px-2 py-1 text-base flex-1 min-w-[150px]"
                 />
               </div>
             ))}
@@ -243,7 +243,7 @@ export default function HealerPatientDetailPage() {
             value={summary}
             onChange={(e) => setSummary(e.target.value)}
             rows={3}
-            className="w-full border border-slate-300 rounded px-3 py-2 text-sm"
+            className="w-full border border-slate-300 rounded px-3 py-2 text-base"
             placeholder="e.g. Overall energy improving, continue distant healing twice a week..."
           />
         </div>

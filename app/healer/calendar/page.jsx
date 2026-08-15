@@ -131,7 +131,7 @@ export default function HealerCalendarPage() {
           ))}
         </select>
       </div>
-      <p className="text-[11px] text-slate-400 text-right -mt-4">
+      <p className="text-xs text-slate-400 text-right -mt-4">
         📍 Onsite (Ortigas) slots always show Philippine time.
       </p>
 

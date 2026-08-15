@@ -330,7 +330,7 @@ export default function HealerProfilePage() {
         <div>
           <label className="block text-sm text-slate-500 mb-1">Email</label>
           <input value={email} disabled className="w-full border border-slate-300 rounded px-3 py-2 bg-slate-50 text-slate-500" />
-          <p className="text-[11px] text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             This is your login email and can't be changed here — contact us if you need it updated.
           </p>
         </div>
@@ -404,7 +404,7 @@ export default function HealerProfilePage() {
             rows={3}
             className="w-full border border-slate-300 rounded px-3 py-2"
           />
-          <p className="text-[11px] text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             Patients will see this on your public profile.
           </p>
         </div>

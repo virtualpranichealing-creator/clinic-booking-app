@@ -950,7 +950,7 @@ function AdminDashboardInner() {
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {SPLIT_LABELS.map((s) => (
                       <div key={s.key} className="bg-brand-mintSoft rounded-lg px-3 py-2">
-                        <p className="text-[11px] text-slate-500">
+                        <p className="text-xs text-slate-500">
                           {s.label} ({s.pct})
                         </p>
                         <p className="text-sm font-semibold text-brand-ink">

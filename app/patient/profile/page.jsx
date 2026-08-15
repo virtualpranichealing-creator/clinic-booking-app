@@ -170,7 +170,7 @@ export default function PatientProfilePage() {
         <div>
           <label className="brand-label">Email</label>
           <input value={email} disabled className="brand-input bg-slate-50 text-slate-500" />
-          <p className="text-[11px] text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 mt-1">
             This is your login email and can't be changed here — contact us if you need it updated.
           </p>
         </div>
@@ -230,7 +230,7 @@ export default function PatientProfilePage() {
             onChange={(e) => setReasonForHealing(e.target.value)}
             rows={3}
             placeholder="What would you like to address through Pranic Healing?"
-            className="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm resize-none"
+            className="w-full border border-slate-300 rounded-xl px-3 py-2 text-base resize-none"
           />
         </div>
 

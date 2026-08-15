@@ -196,14 +196,14 @@ export default function ServicesPage() {
                   <div className="rounded-xl border border-brand-green/20 bg-white p-4 text-center">
                     <p className="text-lg font-display font-bold text-brand-ink">3 Sessions</p>
                     <p className="text-xl font-display font-bold text-brand-green mt-1">₱7,000</p>
-                    <span className="inline-block mt-2 text-[11px] font-medium text-brand-green bg-brand-mint rounded-full px-2.5 py-0.5">
+                    <span className="inline-block mt-2 text-xs font-medium text-brand-green bg-brand-mint rounded-full px-2.5 py-0.5">
                       🎁 + Bonus Healing Kit
                     </span>
                   </div>
                   <div className="rounded-xl border border-brand-green/20 bg-white p-4 text-center">
                     <p className="text-lg font-display font-bold text-brand-ink">6 Sessions</p>
                     <p className="text-xl font-display font-bold text-brand-green mt-1">₱14,000</p>
-                    <span className="inline-block mt-2 text-[11px] font-medium text-brand-green bg-brand-mint rounded-full px-2.5 py-0.5">
+                    <span className="inline-block mt-2 text-xs font-medium text-brand-green bg-brand-mint rounded-full px-2.5 py-0.5">
                       🎁 + Bonus Healing Kit
                     </span>
                   </div>
@@ -300,7 +300,7 @@ export default function ServicesPage() {
                               Cancel
                             </button>
                           </div>
-                          <p className="text-[11px] text-slate-400">
+                          <p className="text-xs text-slate-400">
                             Your package will be marked "Pending" until admin confirms your payment.
                           </p>
                         </div>

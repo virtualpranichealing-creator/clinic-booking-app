@@ -149,7 +149,7 @@ export default function PatientPackagesPage() {
                         Cancel
                       </button>
                     </div>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-xs text-slate-400">
                       Your package will be marked "Pending" until admin confirms your payment.
                     </p>
                   </div>

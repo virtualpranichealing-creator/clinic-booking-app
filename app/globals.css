@@ -123,8 +123,10 @@ body {
 .pill-onsite { @apply pill bg-brand-mint text-brand-green; }
 
 /* Inputs */
+/* text-base (16px), not text-sm: iOS Safari auto-zooms the whole page on
+   focus for any input under 16px, which feels broken on mobile. */
 .brand-input {
-  @apply w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-brand-ink bg-white/80
+  @apply w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-base text-brand-ink bg-white/80
     transition-shadow focus:border-brand-green focus:ring-2 focus:ring-brand-green/20;
 }
 .brand-select {
