@@ -398,7 +398,7 @@ export default function HealerProfilePage() {
           </div>
         </div>
         <div>
-          <label className="block text-sm text-slate-500 mb-1">Bio</label>
+          <label className="block text-sm text-slate-500 mb-1">Bio/Tagline</label>
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}
