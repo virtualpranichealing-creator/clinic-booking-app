@@ -8,6 +8,7 @@ import AppNav from '../../../../components/AppNav';
 import BrandAccent from '../../../../components/BrandAccent';
 import HealerAvatarFallback from '../../../../components/HealerAvatarFallback';
 import { fetchHealerNames } from '../../../../lib/healerNames';
+import { stripCategoryPrefix } from '../../../../lib/specializationLabel';
 
 export default function HealerDirectoryPage() {
   const { categoryId } = useParams();
@@ -46,7 +47,7 @@ export default function HealerDirectoryPage() {
             Meet Your Pranic Healers!
           </h1>
           {category && (
-            <p className="text-sm text-slate-500 mt-2">{category.name}</p>
+            <p className="text-sm text-slate-500 mt-2">{stripCategoryPrefix(category.name)}</p>
           )}
         </div>
 

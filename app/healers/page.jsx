@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { supabase } from '../../lib/supabaseClient';
 import HealerAvatarFallback from '../../components/HealerAvatarFallback';
 import AppNav from '../../components/AppNav';
+import { stripCategoryPrefix } from '../../lib/specializationLabel';
 
 export default function PublicHealersPage() {
   const [healers, setHealers] = useState([]);
@@ -77,7 +78,7 @@ export default function PublicHealersPage() {
                 categoryFilter === c.id ? 'bg-brand-green text-white' : 'bg-slate-100 text-slate-600 hover:bg-brand-mint'
               }`}
             >
-              {c.name}
+              {stripCategoryPrefix(c.name)}
             </button>
           ))}
         </div>

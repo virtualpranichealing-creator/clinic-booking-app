@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { supabase } from '../../../../lib/supabaseClient';
 import AppNav from '../../../../components/AppNav';
 import HealerAvatarFallback from '../../../../components/HealerAvatarFallback';
-import { stripSpecializationPrefix } from '../../../../lib/specializationLabel';
+import { stripSpecializationPrefix, stripCategoryPrefix } from '../../../../lib/specializationLabel';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -273,7 +273,7 @@ export default function AdminHealerDetailPage() {
             <div className="flex flex-wrap gap-1.5">
               {categories.map((c) => (
                 <span key={c} className="pill-neutral">
-                  {c}
+                  {stripCategoryPrefix(c)}
                 </span>
               ))}
             </div>

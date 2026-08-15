@@ -7,6 +7,7 @@ import AppNav from '../../../components/AppNav';
 import BrandAccent from '../../../components/BrandAccent';
 import HealerAvatarFallback from '../../../components/HealerAvatarFallback';
 import { fetchHealerNames } from '../../../lib/healerNames';
+import { stripCategoryPrefix } from '../../../lib/specializationLabel';
 
 export default function AllHealersPage() {
   const [healers, setHealers] = useState([]);
@@ -76,7 +77,7 @@ export default function AllHealersPage() {
                   : 'bg-slate-100 text-slate-600 hover:bg-brand-mint'
               }`}
             >
-              {c.name}
+              {stripCategoryPrefix(c.name)}
             </button>
           ))}
         </div>

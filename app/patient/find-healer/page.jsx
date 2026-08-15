@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { supabase } from '../../../lib/supabaseClient';
 import AppNav from '../../../components/AppNav';
 import BrandAccent from '../../../components/BrandAccent';
+import { stripCategoryPrefix } from '../../../lib/specializationLabel';
 
 export default function FindHealerPage() {
   const [categories, setCategories] = useState([]);
@@ -42,7 +43,7 @@ export default function FindHealerPage() {
               href={`/patient/find-healer/${c.id}`}
               className="bg-brand-green hover:opacity-90 transition-colors text-white font-bold text-center rounded-full py-5 px-6 shadow-sm"
             >
-              {c.name}
+              {stripCategoryPrefix(c.name)}
             </Link>
           ))}
           {categories.length === 0 && (

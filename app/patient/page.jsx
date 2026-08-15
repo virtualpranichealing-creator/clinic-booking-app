@@ -17,6 +17,7 @@ import { slotTypeIcon, SLOT_TYPE_SHORT_LABELS } from '../../lib/slotTypeIcons';
 import { sessionTypeLabel } from '../../lib/sessionTypeLabel';
 import { useIsMobile } from '../../lib/useIsMobile';
 import { fetchHealerNames } from '../../lib/healerNames';
+import { stripCategoryPrefix } from '../../lib/specializationLabel';
 
 const STATUS_COLORS = {
   available: { bg: '#3D6B4A', border: '#2f5439' }, // brand green
@@ -519,7 +520,7 @@ function PatientDashboardInner() {
                       : 'border-slate-300 text-slate-600 hover:bg-brand-mint'
                   }`}
                 >
-                  {c.name}
+                  {stripCategoryPrefix(c.name)}
                 </button>
               ))}
             </div>

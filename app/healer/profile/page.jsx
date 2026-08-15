@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import AppNav from '../../../components/AppNav';
-import { stripSpecializationPrefix } from '../../../lib/specializationLabel';
+import { stripSpecializationPrefix, stripCategoryPrefix } from '../../../lib/specializationLabel';
 
 const CREDENTIAL_OPTIONS = [
   'Basic Pranic Healing Instructor',
@@ -392,7 +392,7 @@ export default function HealerProfilePage() {
                     : 'border-slate-300'
                 }`}
               >
-                {c.name}
+                {stripCategoryPrefix(c.name)}
               </button>
             ))}
           </div>

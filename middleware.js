@@ -12,6 +12,15 @@ import { NextResponse } from 'next/server';
 // the public healers directory) never got that refresh, so a session
 // nearing expiry could go stale while browsing there with nothing to
 // refresh it - looking like an unexpected logout.
+// path.startsWith(base) alone would also match unrelated sibling routes
+// that happen to share a prefix - e.g. '/healers' (the public directory)
+// starts with '/healer', so it was getting caught by the /healer role gate
+// below and redirected to /login even though it's meant to be public.
+// Requiring an exact match or a '/' boundary avoids that.
+function pathMatches(path, base) {
+  return path === base || path.startsWith(`${base}/`);
+}
+
 export async function middleware(req) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
@@ -20,7 +29,7 @@ export async function middleware(req) {
   const path = req.nextUrl.pathname;
 
   const protectedRoutes = ['/admin', '/healer', '/patient', '/services'];
-  const isProtected = protectedRoutes.some((r) => path.startsWith(r));
+  const isProtected = protectedRoutes.some((r) => pathMatches(path, r));
 
   if (!isProtected) return res;
 
@@ -30,7 +39,7 @@ export async function middleware(req) {
     return NextResponse.redirect(loginUrl);
   }
 
-  if (path.startsWith('/services')) return res;
+  if (pathMatches(path, '/services')) return res;
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -40,10 +49,10 @@ export async function middleware(req) {
 
   const role = profile?.role;
 
-  if (path.startsWith('/admin') && role !== 'admin') {
+  if (pathMatches(path, '/admin') && role !== 'admin') {
     return NextResponse.redirect(new URL(`/${role}`, req.url));
   }
-  if (path.startsWith('/healer') && role !== 'healer') {
+  if (pathMatches(path, '/healer') && role !== 'healer') {
     return NextResponse.redirect(new URL(`/${role}`, req.url));
   }
   // Healers and admin can browse/book with other healers too, same as
