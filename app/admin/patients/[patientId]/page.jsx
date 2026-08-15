@@ -118,12 +118,17 @@ export default function AdminPatientDetailPage() {
     <div className="brand-page space-y-6">
       <AppNav />
 
-      <button
-        onClick={() => router.push('/admin')}
-        className="text-sm text-brand-green hover:underline flex items-center gap-1"
-      >
-        ← Back to admin dashboard
-      </button>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <button
+          onClick={() => router.push('/admin')}
+          className="text-sm text-brand-green hover:underline flex items-center gap-1"
+        >
+          ← Back to admin dashboard
+        </button>
+        <a href={`/admin/patients/${patientId}/report`} target="_blank" rel="noreferrer" className="btn-ghost btn-sm">
+          📄 Download healing journey report
+        </a>
+      </div>
 
       {/* Header card */}
       <div className="brand-shell">

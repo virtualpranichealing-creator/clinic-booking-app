@@ -41,6 +41,7 @@ const ADMIN_TABS = [
   { href: '/admin?tab=patients', label: 'Patients' },
   { href: '/admin?tab=payments', label: 'Payments' },
   { href: '/admin?tab=interactive', label: 'Interactive' },
+  { href: '/admin?tab=reports', label: 'Reports' },
   { href: '/contact', label: 'Contact Us' },
 ];
 
