@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { supabase } from '../../../../lib/supabaseClient';
 import AppNav from '../../../../components/AppNav';
 import HealerAvatarFallback from '../../../../components/HealerAvatarFallback';
+import { stripSpecializationPrefix } from '../../../../lib/specializationLabel';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -282,10 +283,11 @@ export default function AdminHealerDetailPage() {
         {specializations.length > 0 && (
           <div>
             <p className="text-xs font-semibold text-slate-500 mb-1">Specializations</p>
+            <p className="text-[11px] text-slate-400 italic mb-1">Pranic Healing for:</p>
             <div className="flex flex-wrap gap-1.5">
               {specializations.map((s, i) => (
                 <span key={i} className="pill-neutral">
-                  {s.label}
+                  {stripSpecializationPrefix(s.label)}
                 </span>
               ))}
             </div>

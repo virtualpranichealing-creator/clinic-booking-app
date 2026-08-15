@@ -6,6 +6,7 @@ import { supabase } from '../../../../lib/supabaseClient';
 import AppNav from '../../../../components/AppNav';
 import BrandAccent from '../../../../components/BrandAccent';
 import HealerAvatarFallback from '../../../../components/HealerAvatarFallback';
+import { stripSpecializationPrefix } from '../../../../lib/specializationLabel';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -149,9 +150,10 @@ export default function HealerPublicProfilePage() {
             {specializations.length > 0 && (
               <div>
                 <p className="font-bold uppercase text-sm tracking-wide">Specializes in</p>
+                <p className="text-xs text-slate-400 italic mt-0.5">Pranic Healing for:</p>
                 <ul className="list-disc list-inside italic text-sm mt-1">
                   {specializations.map((s, i) => (
-                    <li key={i}>{s.label}</li>
+                    <li key={i}>{stripSpecializationPrefix(s.label)}</li>
                   ))}
                 </ul>
               </div>

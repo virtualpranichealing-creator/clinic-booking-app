@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import AppNav from '../../../components/AppNav';
+import { stripSpecializationPrefix } from '../../../lib/specializationLabel';
 
 const CREDENTIAL_OPTIONS = [
   'Basic Pranic Healing Instructor',
@@ -454,6 +455,7 @@ export default function HealerProfilePage() {
             <label className="block text-sm text-slate-500 mb-1">
               Specializes in (tap to select — patients will see these listed on your profile)
             </label>
+            <p className="text-xs text-slate-400 italic mb-1.5">Pranic Healing for:</p>
             <div className="flex flex-wrap gap-2">
               {allSpecializations.map((s) => (
                 <button
@@ -466,7 +468,7 @@ export default function HealerProfilePage() {
                       : 'border-slate-300'
                   }`}
                 >
-                  {s.label}
+                  {stripSpecializationPrefix(s.label)}
                 </button>
               ))}
             </div>
