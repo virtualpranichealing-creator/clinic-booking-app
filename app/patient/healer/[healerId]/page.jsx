@@ -150,7 +150,7 @@ export default function HealerPublicProfilePage() {
             {specializations.length > 0 && (
               <div>
                 <p className="font-bold uppercase text-sm tracking-wide">Specializes in</p>
-                <p className="text-xs text-slate-400 italic mt-0.5">Pranic Healing for:</p>
+                <p className="text-base font-bold text-brand-green mt-1">Pranic Healing for:</p>
                 <ul className="list-disc list-inside italic text-sm mt-1">
                   {specializations.map((s, i) => (
                     <li key={i}>{stripSpecializationPrefix(s.label)}</li>
