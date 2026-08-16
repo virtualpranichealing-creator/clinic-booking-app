@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { readableAuthError } from '../../lib/authError';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -20,7 +21,7 @@ export default function ForgotPasswordPage() {
 
     setLoading(false);
     if (resetError) {
-      setError(resetError.message);
+      setError(readableAuthError(resetError));
       return;
     }
     setSent(true);

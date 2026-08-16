@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
+import { readableAuthError } from '../../lib/authError';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function ResetPasswordPage() {
 
     setLoading(false);
     if (updateError) {
-      setError(updateError.message);
+      setError(readableAuthError(updateError));
       return;
     }
     setDone(true);

@@ -3,6 +3,7 @@
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase, getCurrentProfile } from '../../lib/supabaseClient';
+import { readableAuthError } from '../../lib/authError';
 
 function LoginPageInner() {
   const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ function LoginPageInner() {
     });
 
     if (signInError) {
-      setError(signInError.message);
+      setError(readableAuthError(signInError));
       setLoading(false);
       return;
     }

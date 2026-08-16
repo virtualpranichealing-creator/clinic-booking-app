@@ -3,6 +3,7 @@
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
+import { readableAuthError } from '../../lib/authError';
 
 function SignupPageInner() {
   const [role, setRole] = useState('patient');
@@ -34,7 +35,7 @@ function SignupPageInner() {
     });
 
 if (signUpError) {
-      setError(signUpError.message);
+      setError(readableAuthError(signUpError));
       setLoading(false);
       return;
     }
@@ -66,7 +67,7 @@ const userId = data.user?.id;
         .insert({ user_id: userId });
 
       if (healerError) {
-        setError(healerError.message);
+        setError(readableAuthError(healerError));
         setLoading(false);
         return;
       }
