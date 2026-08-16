@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { readableAuthError } from '../../lib/authError';
+import PasswordInput from '../../components/PasswordInput';
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -74,21 +75,17 @@ export default function ResetPasswordPage() {
             </p>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="password"
+              <PasswordInput
                 placeholder="New password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="brand-input"
                 required
                 minLength={6}
               />
-              <input
-                type="password"
+              <PasswordInput
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="brand-input"
                 required
                 minLength={6}
               />

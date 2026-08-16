@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase, getCurrentProfile } from '../../lib/supabaseClient';
 import { readableAuthError } from '../../lib/authError';
+import PasswordInput from '../../components/PasswordInput';
 
 function LoginPageInner() {
   const [email, setEmail] = useState('');
@@ -76,12 +77,10 @@ function LoginPageInner() {
             className="brand-input"
             required
           />
-          <input
-            type="password"
+          <PasswordInput
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="brand-input"
             required
           />
 
