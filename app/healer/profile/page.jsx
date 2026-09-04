@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import AppNav from '../../../components/AppNav';
 import { stripSpecializationPrefix, stripCategoryPrefix } from '../../../lib/specializationLabel';
+import { PATIENT_DISCLAIMER_TEXT, HEALER_AGREEMENT_TEXT } from '../../../lib/consentText';
 
 const CREDENTIAL_OPTIONS = [
   'Basic Pranic Healing Instructor',
@@ -13,24 +14,6 @@ const CREDENTIAL_OPTIONS = [
   'Pranic Psychotherapy Graduate',
   'Advanced Pranic Healing Graduate',
 ];
-
-const AGREEMENT_TEXT = `By submitting this form, you consent to the collection and secure storage of your information for the administration of the HOPE Project – Online Pranic Healing Sessions. Your personal information will be kept confidential and used only for official clinic purposes.
-
-As a participating healer, I agree to:
-• Follow the MCKS Pranic Healing teachings and Guidelines
-• Keep all patient and information from this session strictly confidential.
-• Maintain professionalism, integrity, and respect in all healing activities.
-• Take responsibility for my own physical, emotional, and energetic well-being, and refrain from healing when unfit or seriously ill.
-• Understand that participation may be subject to screening, including assessment of my physical, emotional, and energetic condition.
-• Understand that my participation in the HOPE Project is voluntary and may be revoked at any time, without prior written notice, for justifiable cause, at the discretion of the project organizers.
-
-By submitting this form, I confirm that I have read, understood, and agree to these terms.`;
-
-const PATIENT_CONSENT_TEXT = `I, the person filling out this form, understand that Pranic Healing is not meant to replace conventional medicine but rather to complement it. If symptoms persist, a medical professional is to be consulted immediately.
-
-I am voluntarily participating in this Pranic Healing Treatment. I consent to the collection and use of my personal and health information for my Pranic Healing Treatment, Administrative needs and for Certification of the assigned Pranic Healer.
-
-I hereby release the person(s) and/or the Pranic Healing organization from any liability as a result of the services received by me. The protected information provided will be dealt with sensitivity and in strict confidence, and may be disclosed or used for therapy and quality improvement.`;
 
 export default function HealerProfilePage() {
   const [loading, setLoading] = useState(true);
@@ -562,7 +545,7 @@ export default function HealerProfilePage() {
           />
         </div>
         <div className="text-xs text-slate-600 whitespace-pre-line border rounded p-3 max-h-40 overflow-y-auto bg-slate-50">
-          {PATIENT_CONSENT_TEXT}
+          {PATIENT_DISCLAIMER_TEXT}
         </div>
         <label className="flex items-start gap-2 text-sm">
           <input
@@ -578,7 +561,7 @@ export default function HealerProfilePage() {
       <section className="space-y-3 border-t pt-4">
         <h2 className="text-lg font-medium">Confidentiality & Healer Agreement</h2>
         <div className="text-xs text-slate-600 whitespace-pre-line border rounded p-3 max-h-48 overflow-y-auto bg-slate-50">
-          {AGREEMENT_TEXT}
+          {HEALER_AGREEMENT_TEXT}
         </div>
         <label className="flex items-center gap-2 text-sm">
           <input

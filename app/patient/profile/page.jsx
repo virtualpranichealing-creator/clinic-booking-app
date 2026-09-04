@@ -3,12 +3,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import AppNav from '../../../components/AppNav';
-
-const CONSENT_TEXT = `I, the person filling out this form, understand that Pranic Healing is not meant to replace conventional medicine but rather to complement it. If symptoms persist, a medical professional is to be consulted immediately.
-
-I am voluntarily participating in this Pranic Healing Treatment. I consent to the collection and use of my personal and health information for my Pranic Healing Treatment, Administrative needs and for Certification of the assigned Pranic Healer.
-
-I hereby release the person(s) and/or the Pranic Healing organization from any liability as a result of the services received by me. The protected information provided will be dealt with sensitivity and in strict confidence, and may be disclosed or used for therapy and quality improvement.`;
+import { PATIENT_DISCLAIMER_TEXT } from '../../../lib/consentText';
 
 export default function PatientProfilePage() {
   const [loading, setLoading] = useState(true);
@@ -237,7 +232,7 @@ export default function PatientProfilePage() {
         <div className="border-t border-slate-100 pt-4 space-y-3">
           <p className="brand-label">Consent</p>
           <div className="text-xs text-slate-600 whitespace-pre-line border border-slate-200 rounded-xl p-3 max-h-40 overflow-y-auto bg-slate-50">
-            {CONSENT_TEXT}
+            {PATIENT_DISCLAIMER_TEXT}
           </div>
           <label className="flex items-start gap-2 text-sm">
             <input

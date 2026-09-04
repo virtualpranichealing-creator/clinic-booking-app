@@ -169,7 +169,17 @@ const userId = data.user?.id;
             <span>
               I agree to keep all information shared during Pranic Healing sessions strictly
               confidential, and understand that Project HOPE handles my own information with the
-              same care and confidentiality.
+              same care and confidentiality. In compliance with the Data Privacy Act, my personal
+              information is collected, used, and stored as described in the{' '}
+              <a
+                href="https://www.pranichealing.com.ph"
+                target="_blank"
+                rel="noreferrer"
+                className="text-brand-green underline underline-offset-2"
+              >
+                PHFP Privacy Notice
+              </a>
+              .
             </span>
           </label>
 
