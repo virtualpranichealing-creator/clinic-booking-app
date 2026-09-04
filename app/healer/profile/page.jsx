@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../../lib/supabaseClient';
 import AppNav from '../../../components/AppNav';
 import { stripSpecializationPrefix, stripCategoryPrefix } from '../../../lib/specializationLabel';
-import { PATIENT_DISCLAIMER_TEXT, HEALER_AGREEMENT_TEXT } from '../../../lib/consentText';
+import { MEDICAL_DISCLAIMER_TEXT, HEALER_AGREEMENT_TEXT } from '../../../lib/consentText';
 
 const CREDENTIAL_OPTIONS = [
   'Basic Pranic Healing Instructor',
@@ -545,8 +545,12 @@ export default function HealerProfilePage() {
           />
         </div>
         <div className="text-xs text-slate-600 whitespace-pre-line border rounded p-3 max-h-40 overflow-y-auto bg-slate-50">
-          {PATIENT_DISCLAIMER_TEXT}
+          {MEDICAL_DISCLAIMER_TEXT}
         </div>
+        <p className="text-xs text-slate-400 -mt-1">
+          Data privacy details for this information are covered in the Confidentiality &amp;
+          Healer Agreement below.
+        </p>
         <label className="flex items-start gap-2 text-sm">
           <input
             type="checkbox"
